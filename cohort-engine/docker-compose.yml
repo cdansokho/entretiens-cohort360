@@ -3,7 +3,7 @@ version: '3.8'
 services:
   solr:
     image: solr:8.11.2
-    container_name: solr_test_exercise
+    container_name: solr_cohort_engine
     ports:
       - "8983:8983"
       - "9983:9983"

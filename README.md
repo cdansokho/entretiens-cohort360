@@ -76,18 +76,17 @@ L'API et le frontend fonctionnent ensemble (le frontend consomme l'API Django). 
 │   └── manage.py
 │
 ├── frontend/                        # Interface React + TypeScript
-│   └── frontend/
-│       ├── src/
-│       │   ├── pages/               # Pages (PrescriptionsPage)
-│       │   ├── components/          # Composants réutilisables
-│       │   ├── hooks/               # Custom hooks (useApi)
-│       │   ├── api/                 # Client HTTP Axios
-│       │   └── types/               # Types TypeScript
-│       ├── package.json
-│       └── vite.config.ts
+│   ├── src/
+│   │   ├── pages/                   # Pages (PrescriptionsPage)
+│   │   ├── components/              # Composants réutilisables
+│   │   ├── hooks/                   # Custom hooks (useApi)
+│   │   ├── api/                     # Client HTTP Axios
+│   │   └── types/                   # Types TypeScript
+│   ├── package.json
+│   └── vite.config.ts
 │
 └── cohort-engine/                   # Moteur de cohortes Scala/Spark
-    ├── src/main/scala/com/exercise/
+    ├── src/main/scala/com/cohort360/
     │   ├── engine/                  # CohortSearchEngine (coeur du moteur)
     │   ├── model/                   # Modèle SearchCriteria
     │   └── utils/                   # Connecteur Solr
@@ -117,7 +116,7 @@ L'API et le frontend fonctionnent ensemble (le frontend consomme l'API Django). 
 ### Installation
 
 ```bash
-cd Exercice_Django
+cd backend
 
 python -m venv venv
 source venv/bin/activate        # Linux / macOS
@@ -194,7 +193,7 @@ python manage.py test medical.tests.test_api -v 2
 ### Installation
 
 ```bash
-cd Exercice_Front/frontend
+cd frontend
 
 npm install
 ```
@@ -245,7 +244,7 @@ npm run build
 ### Installation
 
 ```bash
-cd Exercice_scala_spark
+cd cohort-engine
 
 # Démarrer Solr
 docker-compose up -d

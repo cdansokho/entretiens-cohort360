@@ -1,11 +1,11 @@
-package com.exercise.engine
+package com.cohort360.engine
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
-import com.exercise.model._
-import com.exercise.utils.SolrConf
+import com.cohort360.model._
+import com.cohort360.utils.SolrConf
 
 /**
  * Unit tests for CohortSearchEngine.

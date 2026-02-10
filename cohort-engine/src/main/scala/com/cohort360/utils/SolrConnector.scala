@@ -1,4 +1,4 @@
-package com.exercise.utils
+package com.cohort360.utils
 
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.solr.client.solrj.impl.HttpSolrClient

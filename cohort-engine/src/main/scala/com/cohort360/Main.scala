@@ -1,8 +1,8 @@
-package com.exercise
+package com.cohort360
 
-import com.exercise.engine.CohortSearchEngine
-import com.exercise.model._
-import com.exercise.utils.SolrConf
+import com.cohort360.engine.CohortSearchEngine
+import com.cohort360.model._
+import com.cohort360.utils.SolrConf
 import com.lucidworks.spark.LazyLogging
 import io.github.cdimascio.dotenv.Dotenv
 import org.apache.spark.sql.SparkSession

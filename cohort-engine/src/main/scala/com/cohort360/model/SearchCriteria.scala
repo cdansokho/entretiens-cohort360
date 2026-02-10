@@ -1,4 +1,4 @@
-package com.exercise.model
+package com.cohort360.model
 
 case class Criterion(
     Resource: String,

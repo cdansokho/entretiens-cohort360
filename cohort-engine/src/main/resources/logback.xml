@@ -9,7 +9,7 @@
         <appender-ref ref="STDOUT" />
     </root>
 
-    <logger name="com.exercise" level="DEBUG" />
+    <logger name="com.cohort360" level="DEBUG" />
     <logger name="org.apache.spark" level="WARN" />
     <logger name="org.apache.solr" level="WARN" />
 </configuration>

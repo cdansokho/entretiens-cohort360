@@ -1,7 +1,7 @@
-package com.exercise.engine
+package com.cohort360.engine
 
-import com.exercise.model._
-import com.exercise.utils.{SolrConf, SolrConnector}
+import com.cohort360.model._
+import com.cohort360.utils.{SolrConf, SolrConnector}
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._

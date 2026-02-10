@@ -1,4 +1,4 @@
-name := "scala-spark-solr-exercise"
+name := "cohort-engine"
 version := "0.1"
 scalaVersion := "2.12.17"
 
