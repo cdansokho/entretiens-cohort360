@@ -1,69 +1,76 @@
 import axios from "axios";
+import { ENDPOINTS } from "./endpoints";
 import type {
   Patient,
   Medication,
   Prescription,
   PrescriptionPayload,
   PrescriptionFilters,
+  PaginatedPrescriptions,
 } from "@/types";
 
 /**
- * Client Axios configuré pour communiquer avec le backend Django.
- * En développement, Vite proxy /api → http://localhost:8000.
+ * Axios instance for the Django backend.
+ * In dev, Vite proxies /api → http://localhost:8000.
  */
-const api = axios.create({
+export const api = axios.create({
   baseURL: "/api",
   headers: { "Content-Type": "application/json" },
 });
 
+/** Build query params from filters (omit empty/undefined). */
+function buildQueryParams(filters?: PrescriptionFilters): Record<string, string | number> {
+  const params: Record<string, string | number> = {};
+  if (!filters) return params;
+  for (const [key, value] of Object.entries(filters)) {
+    if (value !== undefined && value !== "") params[key] = value;
+  }
+  return params;
+}
+
 // ─── Patients ────────────────────────────────────────────────────────────────
 
-export const fetchPatients = async (): Promise<Patient[]> => {
-  const { data } = await api.get<Patient[]>("/Patient");
+export async function fetchPatients(): Promise<Patient[]> {
+  const { data } = await api.get<Patient[]>(ENDPOINTS.patients);
   return data;
-};
+}
 
 // ─── Medications ─────────────────────────────────────────────────────────────
 
-export const fetchMedications = async (): Promise<Medication[]> => {
-  const { data } = await api.get<Medication[]>("/Medication", {
+export async function fetchMedications(): Promise<Medication[]> {
+  const { data } = await api.get<Medication[]>(ENDPOINTS.medications, {
     params: { status: "actif" },
   });
   return data;
-};
+}
 
 // ─── Prescriptions ───────────────────────────────────────────────────────────
 
-/** Récupérer la liste des prescriptions avec filtres optionnels. */
-export const fetchPrescriptions = async (
+export async function fetchPrescriptions(
   filters?: PrescriptionFilters
-): Promise<Prescription[]> => {
-  // Nettoyer les filtres vides pour ne pas envoyer de paramètres inutiles
-  const params: Record<string, string | number> = {};
-  if (filters) {
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== "") {
-        params[key] = value;
-      }
-    });
-  }
-  const { data } = await api.get<Prescription[]>("/Prescription", { params });
+): Promise<PaginatedPrescriptions> {
+  const { data } = await api.get<PaginatedPrescriptions>(ENDPOINTS.prescriptions, {
+    params: buildQueryParams(filters),
+  });
   return data;
-};
+}
 
-/** Créer une nouvelle prescription. */
-export const createPrescription = async (
+export async function fetchPrescription(id: number): Promise<Prescription> {
+  const { data } = await api.get<Prescription>(ENDPOINTS.prescription(id));
+  return data;
+}
+
+export async function createPrescription(
   payload: PrescriptionPayload
-): Promise<Prescription> => {
-  const { data } = await api.post<Prescription>("/Prescription", payload);
+): Promise<Prescription> {
+  const { data } = await api.post<Prescription>(ENDPOINTS.prescriptions, payload);
   return data;
-};
+}
 
-/** Mettre à jour une prescription existante (partiel). */
-export const updatePrescription = async (
+export async function updatePrescription(
   id: number,
   payload: Partial<PrescriptionPayload>
-): Promise<Prescription> => {
-  const { data } = await api.patch<Prescription>(`/Prescription/${id}`, payload);
+): Promise<Prescription> {
+  const { data } = await api.patch<Prescription>(ENDPOINTS.prescription(id), payload);
   return data;
-};
+}

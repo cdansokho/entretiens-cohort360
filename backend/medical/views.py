@@ -5,6 +5,7 @@ from rest_framework.filters import OrderingFilter
 from .models import Patient, Medication, Prescription
 from .filters import PatientFilter, MedicationFilter, PrescriptionFilter
 from .serializers import PatientSerializer, MedicationSerializer, PrescriptionSerializer
+from .pagination import PrescriptionPagination
 
 
 class PatientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -51,6 +52,7 @@ class PrescriptionViewSet(viewsets.ModelViewSet):
     filterset_class = PrescriptionFilter
     ordering_fields = ["start_date", "end_date", "status", "id"]
     ordering = ["-start_date"]
+    pagination_class = PrescriptionPagination
 
     def get_queryset(self):
         """

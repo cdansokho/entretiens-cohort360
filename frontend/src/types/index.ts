@@ -47,4 +47,21 @@ export interface PrescriptionFilters {
   start_date_lte?: string;
   end_date_gte?: string;
   end_date_lte?: string;
+  /**
+   * Champ de tri côté backend (paramètre `ordering` de Django REST).
+   * Exemples : "start_date", "-start_date", "end_date", "-end_date", "id", "-id".
+   */
+  ordering?: string;
+  /** Numéro de page (1-based). */
+  page?: number;
+  /** Nombre d'éléments par page. */
+  page_size?: number;
+}
+
+/** Réponse paginée des prescriptions (format Django REST). */
+export interface PaginatedPrescriptions {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Prescription[];
 }

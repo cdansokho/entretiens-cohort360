@@ -3,6 +3,7 @@ import {
   fetchPatients,
   fetchMedications,
   fetchPrescriptions,
+  fetchPrescription,
   createPrescription,
   updatePrescription,
 } from "@/api/client";
@@ -15,6 +16,7 @@ export const queryKeys = {
   medications: ["medications"] as const,
   prescriptions: (filters?: PrescriptionFilters) =>
     ["prescriptions", filters ?? {}] as const,
+  prescription: (id: number) => ["prescription", id] as const,
 };
 
 // ─── Hooks de lecture ────────────────────────────────────────────────────────
@@ -37,6 +39,13 @@ export const usePrescriptions = (filters?: PrescriptionFilters) =>
   useQuery({
     queryKey: queryKeys.prescriptions(filters),
     queryFn: () => fetchPrescriptions(filters),
+  });
+
+export const usePrescription = (id: number | null) =>
+  useQuery({
+    queryKey: queryKeys.prescription(id ?? 0),
+    queryFn: () => fetchPrescription(id!),
+    enabled: id != null && id > 0,
   });
 
 // ─── Hooks de mutation ───────────────────────────────────────────────────────
