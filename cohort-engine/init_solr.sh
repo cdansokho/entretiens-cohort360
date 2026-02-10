@@ -169,4 +169,4 @@
   curl -s -X POST -H 'Content-Type: application/json' 'http://localhost:8983/solr/documentReferenceAphp/update?commit=true' --data-binary "$DOCUMENTS_DATA"
 
   echo "Initialization finished."
-) > /var/solr/logs/init_solr.log 2>&1 &
+)
