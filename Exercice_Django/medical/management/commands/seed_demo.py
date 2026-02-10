@@ -4,7 +4,7 @@ from datetime import date, timedelta
 
 from django.core.management.base import BaseCommand
 
-from medical.models import Patient, Medication
+from medical.models import Patient, Medication, Prescription
 
 
 def random_date(start_year=1940, end_year=2025):
@@ -15,17 +15,22 @@ def random_date(start_year=1940, end_year=2025):
 
 
 class Command(BaseCommand):
-    Patient.objects.all().delete()
-    Medication.objects.all().delete()
-    help = "Seed the database with demo Patients and Medications"
+    help = "Seed the database with demo Patients, Medications and Prescriptions"
 
     def add_arguments(self, parser):
         parser.add_argument("--patients", type=int, default=10)
         parser.add_argument("--medications", type=int, default=5)
+        parser.add_argument("--prescriptions", type=int, default=30)
 
     def handle(self, *args, **options):
         n_patients = options["patients"]
         n_meds = options["medications"]
+        n_prescriptions = options["prescriptions"]
+
+        # Nettoyage
+        Prescription.objects.all().delete()
+        Patient.objects.all().delete()
+        Medication.objects.all().delete()
 
         last_names = [
             "Martin", "Bernard", "Thomas", "Petit", "Robert",
@@ -80,12 +85,64 @@ class Command(BaseCommand):
         created_meds = []
         for i in range(n_meds):
             code = f"MED{random.randint(1000, 9999)}{random.choice(string.ascii_uppercase)}"
-            label = f"{random.choice(base_labels)} {random.choice([15, 20, 25, 50, 100, 200, 250, 300, 400, 500, 800, 1000])}" + random.choice(
-                ["mg", "g", "µg"])
-            status = random.choices([Medication.STATUS_ACTIF, Medication.STATUS_SUPPR], weights=[0.8, 0.2])[0]
+            label = (
+                f"{random.choice(base_labels)} "
+                f"{random.choice([15, 20, 25, 50, 100, 200, 250, 300, 400, 500, 800, 1000])}"
+                + random.choice(["mg", "g", "µg"])
+            )
+            status = random.choices(
+                [Medication.STATUS_ACTIF, Medication.STATUS_SUPPR],
+                weights=[0.8, 0.2],
+            )[0]
             m = Medication.objects.create(code=code, label=label, status=status)
             created_meds.append(m)
 
+        # --- Prescriptions fictives ---
+        comments = [
+            "",
+            "Traitement de fond",
+            "Renouvellement mensuel",
+            "Prescription post-opératoire",
+            "Traitement d'urgence",
+            "À prendre pendant les repas",
+            "Surveillance renforcée",
+            "Posologie adaptée au poids",
+            "Prescription initiale hospitalière",
+            "Traitement de courte durée",
+        ]
+
+        statuses = [
+            Prescription.STATUS_VALIDE,
+            Prescription.STATUS_EN_ATTENTE,
+            Prescription.STATUS_SUPPR,
+        ]
+        status_weights = [0.6, 0.25, 0.15]
+
+        created_prescriptions = []
+        for _ in range(n_prescriptions):
+            patient = random.choice(created_patients)
+            medication = random.choice(created_meds)
+
+            # Générer une période cohérente (début entre 2024 et 2026)
+            start = random_date(start_year=2024, end_year=2026)
+            duration = timedelta(days=random.randint(7, 365))
+            end = start + duration
+
+            status = random.choices(statuses, weights=status_weights)[0]
+            comment = random.choice(comments)
+
+            rx = Prescription.objects.create(
+                patient=patient,
+                medication=medication,
+                start_date=start,
+                end_date=end,
+                status=status,
+                comment=comment,
+            )
+            created_prescriptions.append(rx)
+
         self.stdout.write(self.style.SUCCESS(
-            f"Created {len(created_patients)} patients and {len(created_meds)} medications."
+            f"Created {len(created_patients)} patients, "
+            f"{len(created_meds)} medications and "
+            f"{len(created_prescriptions)} prescriptions."
         ))
