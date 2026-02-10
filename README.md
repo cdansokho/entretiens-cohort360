@@ -1,17 +1,18 @@
-# Cohort360 — Exercices Techniques Fullstack & Data
+# Cohort360 — Plateforme de Gestion de Prescriptions Médicales
 
-> Plateforme d'exercices techniques couvrant le développement fullstack dans le domaine de la santé numérique : **Backend Django**, **Frontend React/TypeScript** et **Moteur de cohortes Scala/Spark**.
+> Application fullstack de gestion de prescriptions médicales avec moteur de recherche de cohortes de patients, construite autour du standard **HL7-FHIR** pour le domaine de la santé numérique.
 
 ---
 
 ## Table des matières
 
 - [Présentation](#présentation)
-- [Architecture du projet](#architecture-du-projet)
+- [Fonctionnalités](#fonctionnalités)
+- [Architecture](#architecture)
 - [Prérequis](#prérequis)
-- [Exercice 1 — Backend Django REST API](#exercice-1--backend-django-rest-api)
-- [Exercice 2 — Frontend React + TypeScript](#exercice-2--frontend-react--typescript)
-- [Exercice 3 — Moteur de cohortes Scala/Spark](#exercice-3--moteur-de-cohortes-scalaspark)
+- [Backend — API REST Django](#backend--api-rest-django)
+- [Frontend — React + TypeScript](#frontend--react--typescript)
+- [Moteur de cohortes — Scala/Spark](#moteur-de-cohortes--scalaspark)
 - [Stack technique](#stack-technique)
 - [Auteur](#auteur)
 
@@ -19,23 +20,49 @@
 
 ## Présentation
 
-Ce dépôt contient trois exercices techniques indépendants, conçus autour du domaine de la **santé numérique** et du standard **HL7-FHIR**. Chaque exercice peut être installé et exécuté séparément.
+Cohort360 est une plateforme médicale composée de trois modules complémentaires, conçue pour répondre aux besoins des établissements de santé en matière de gestion de prescriptions et d'analyse de cohortes de patients.
 
-| Exercice | Stack | Description |
-|----------|-------|-------------|
-| **Exercice_Django** | Python, Django, DRF | API REST de gestion de prescriptions médicales |
-| **Exercice_Front** | React 19, TypeScript, Tailwind CSS 4 | Interface de consultation et de création de prescriptions |
-| **Exercice_scala_spark** | Scala 2.12, Spark 3.3, Solr 8 | Moteur de recherche de cohortes de patients |
+Le projet s'articule autour de trois axes :
 
-Les exercices **Backend Django** et **Frontend** sont liés : le frontend consomme l'API Django. L'exercice **Scala/Spark** est indépendant.
+| Module | Stack | Rôle |
+|--------|-------|------|
+| **Backend API** | Python, Django, DRF | API REST de gestion des prescriptions médicales |
+| **Frontend** | React 19, TypeScript, Tailwind CSS 4 | Interface de consultation et de saisie des prescriptions |
+| **Moteur de cohortes** | Scala 2.12, Spark 3.3, Solr 8 | Recherche de cohortes de patients sur des critères FHIR |
+
+L'API et le frontend fonctionnent ensemble (le frontend consomme l'API Django). Le moteur de cohortes est un module indépendant dédié à l'analyse de données massives.
 
 ---
 
-## Architecture du projet
+## Fonctionnalités
+
+**Gestion des prescriptions**
+- CRUD complet sur les prescriptions (création, consultation, modification)
+- Liaison Patient ↔ Médicament avec dates de début/fin et statut
+- Filtres avancés : par patient, médicament, statut, plages de dates
+- Validation métier (cohérence des dates, statuts autorisés)
+- Données de démonstration réalistes (30+ prescriptions)
+
+**Interface utilisateur**
+- Tableau interactif avec colonnes triables
+- Filtres dynamiques (patient, médicament, statut, dates)
+- Formulaire de création avec validation côté client
+- Badges colorés pour la visualisation des statuts
+- Design responsive avec thème médical professionnel
+
+**Moteur de cohortes**
+- Traduction dynamique des critères FHIR en requêtes Solr
+- Logique d'inclusion/exclusion avec jointures Spark
+- Filtrage par périmètre organisationnel
+- Support de tous les préfixes FHIR (ge, gt, le, lt)
+
+---
+
+## Architecture
 
 ```
 .
-├── Exercice_Django/                 # Backend — API REST Django
+├── backend/                         # API REST Django
 │   ├── config/                      # Configuration Django (settings, urls)
 │   ├── medical/                     # Application principale
 │   │   ├── models.py                # Modèles Patient, Medication, Prescription
@@ -44,11 +71,11 @@ Les exercices **Backend Django** et **Frontend** sont liés : le frontend consom
 │   │   ├── filters.py               # Filtres avancés (dates, statut, patient)
 │   │   ├── urls.py                  # Routage automatique DRF
 │   │   ├── tests/test_api.py        # 23 tests unitaires
-│   │   └── management/commands/     # Commande seed_demo
+│   │   └── management/commands/     # Commande de seed
 │   ├── requirements.txt
 │   └── manage.py
 │
-├── Exercice_Front/                  # Frontend — React + TypeScript
+├── frontend/                        # Interface React + TypeScript
 │   └── frontend/
 │       ├── src/
 │       │   ├── pages/               # Pages (PrescriptionsPage)
@@ -59,14 +86,14 @@ Les exercices **Backend Django** et **Frontend** sont liés : le frontend consom
 │       ├── package.json
 │       └── vite.config.ts
 │
-└── Exercice_scala_spark/            # Big Data — Moteur de cohortes
+└── cohort-engine/                   # Moteur de cohortes Scala/Spark
     ├── src/main/scala/com/exercise/
     │   ├── engine/                  # CohortSearchEngine (coeur du moteur)
     │   ├── model/                   # Modèle SearchCriteria
     │   └── utils/                   # Connecteur Solr
-    ├── src/test/scala/              # Tests unitaires Scala
+    ├── src/test/scala/              # Tests unitaires
     ├── docker-compose.yml           # Solr en conteneur
-    ├── init_solr.sh                 # Script d'initialisation des données
+    ├── init_solr.sh                 # Initialisation des données
     └── build.sbt
 ```
 
@@ -74,41 +101,33 @@ Les exercices **Backend Django** et **Frontend** sont liés : le frontend consom
 
 ## Prérequis
 
-| Outil | Version | Utilisé par |
-|-------|---------|-------------|
-| **Python** | 3.10+ | Exercice Django |
-| **Node.js** | 18+ | Exercice Frontend |
-| **npm** | 9+ | Exercice Frontend |
-| **Java JDK** | 17+ | Exercice Scala/Spark |
-| **sbt** | 1.9+ | Exercice Scala/Spark |
-| **Docker** & **Docker Compose** | 20+ | Exercice Scala/Spark (Solr) |
+| Outil | Version | Module |
+|-------|---------|--------|
+| **Python** | 3.10+ | Backend API |
+| **Node.js** | 18+ | Frontend |
+| **npm** | 9+ | Frontend |
+| **Java JDK** | 17+ | Moteur de cohortes |
+| **sbt** | 1.9+ | Moteur de cohortes |
+| **Docker** & **Docker Compose** | 20+ | Moteur de cohortes (Solr) |
 
 ---
 
-## Exercice 1 — Backend Django REST API
-
-### Description
-
-API REST complète de gestion de **prescriptions médicales**, construite avec Django et Django REST Framework. L'API expose des endpoints CRUD pour les patients, les médicaments et les prescriptions, avec des filtres avancés et une validation métier.
+## Backend — API REST Django
 
 ### Installation
 
 ```bash
-# 1. Se placer dans le répertoire
 cd Exercice_Django
 
-# 2. Créer un environnement virtuel
 python -m venv venv
 source venv/bin/activate        # Linux / macOS
 # venv\Scripts\activate         # Windows
 
-# 3. Installer les dépendances
 pip install -r requirements.txt
 
-# 4. Appliquer les migrations
 python manage.py migrate
 
-# 5. Charger les données de démonstration
+# Charger les données de démonstration
 python manage.py seed_demo
 ```
 
@@ -120,23 +139,23 @@ python manage.py runserver
 
 Le serveur démarre sur **http://localhost:8000**. L'API est accessible sous `/api/`.
 
-### Endpoints disponibles
+### Endpoints
 
 | Méthode | Endpoint | Description |
 |---------|----------|-------------|
-| `GET` | `/api/Patient` | Liste de tous les patients |
+| `GET` | `/api/Patient` | Liste des patients |
 | `GET` | `/api/Patient/{id}` | Détail d'un patient |
-| `GET` | `/api/Medication` | Liste de tous les médicaments |
+| `GET` | `/api/Medication` | Liste des médicaments |
 | `GET` | `/api/Medication/{id}` | Détail d'un médicament |
-| `GET` | `/api/Prescription` | Liste des prescriptions (avec filtres) |
+| `GET` | `/api/Prescription` | Liste des prescriptions (filtrable) |
 | `GET` | `/api/Prescription/{id}` | Détail d'une prescription |
 | `POST` | `/api/Prescription` | Créer une prescription |
 | `PUT` | `/api/Prescription/{id}` | Mise à jour complète |
 | `PATCH` | `/api/Prescription/{id}` | Mise à jour partielle |
 
-### Filtres disponibles
+### Filtres
 
-Les prescriptions peuvent être filtrées via des query parameters :
+Les prescriptions peuvent être filtrées via query parameters :
 
 ```
 GET /api/Prescription?patient=1&status=active
@@ -148,76 +167,61 @@ GET /api/Prescription?date_fin__lte=2025-12-31&status=completed
 |-----------|------|-------------|
 | `patient` | int | ID du patient |
 | `medication` | int | ID du médicament |
-| `status` | string | Statut : `active`, `completed`, `cancelled`, `suspended` |
-| `date_debut__gte` | date | Date de début supérieure ou égale à |
-| `date_debut__lte` | date | Date de début inférieure ou égale à |
-| `date_fin__gte` | date | Date de fin supérieure ou égale à |
-| `date_fin__lte` | date | Date de fin inférieure ou égale à |
+| `status` | string | `active`, `completed`, `cancelled`, `suspended` |
+| `date_debut__gte` | date | Date de début >= |
+| `date_debut__lte` | date | Date de début <= |
+| `date_fin__gte` | date | Date de fin >= |
+| `date_fin__lte` | date | Date de fin <= |
 
 ### Validation métier
 
-Le serializer applique les règles suivantes :
 - La **date de fin** doit être postérieure à la **date de début**
-- Le **statut** doit être l'une des valeurs autorisées (`active`, `completed`, `cancelled`, `suspended`)
+- Le **statut** doit être une valeur autorisée
 - Les champs `patient` et `medication` sont obligatoires
 
-### Lancer les tests
+### Tests
 
 ```bash
 python manage.py test medical.tests.test_api -v 2
 ```
 
-**Résultat attendu : 23 tests passent.**
+23 tests couvrant le CRUD, les filtres, la validation et les cas d'erreur.
 
 ---
 
-## Exercice 2 — Frontend React + TypeScript
-
-### Description
-
-Interface web de consultation et de création de prescriptions médicales, construite avec **React 19**, **TypeScript** et **Tailwind CSS 4**. L'application consomme l'API Django de l'exercice 1.
+## Frontend — React + TypeScript
 
 ### Installation
 
 ```bash
-# 1. Se placer dans le répertoire
 cd Exercice_Front/frontend
 
-# 2. Installer les dépendances
 npm install
 ```
 
 ### Lancement
 
 ```bash
-# Assurez-vous que le backend Django tourne sur le port 8000
+# Le backend Django doit tourner sur le port 8000
 npm run dev
 ```
 
 L'application démarre sur **http://localhost:5173**.
 
-### Fonctionnalités
+### Fonctionnalités de l'interface
 
-L'interface propose les fonctionnalités suivantes :
+**Tableau des prescriptions** — Colonnes triables (patient, médicament, dates, statut) avec badges colorés pour la visualisation rapide des statuts et chargement asynchrone.
 
-**Consultation des prescriptions**
+**Filtres dynamiques** — Recherche par patient et médicament via dropdowns, filtre par statut et par plage de dates. Les filtres se combinent entre eux.
 
-Tableau complet avec colonnes triables (patient, médicament, dates, statut), badges colorés pour visualiser le statut de chaque prescription, et chargement asynchrone avec indicateurs de progression.
+**Formulaire de création** — Sélection du patient et du médicament, choix des dates et du statut, champ commentaire optionnel, avec validation côté client.
 
-**Filtres avancés**
-
-Recherche par patient et par médicament via des dropdowns, filtre par statut (active, terminée, annulée, suspendue), et filtre par plage de dates.
-
-**Création de prescriptions**
-
-Formulaire complet avec validation côté client, sélection du patient et du médicament, choix des dates et du statut, et champ commentaire optionnel.
-
-### Architecture frontend
+### Architecture des composants
 
 ```
 src/
 ├── api/client.ts              # Client Axios configuré
-├── types/index.ts             # Interfaces TypeScript (Patient, Medication, Prescription)
+├── types/index.ts             # Interfaces TypeScript
 ├── hooks/useApi.ts            # Custom hooks React Query
 ├── components/
 │   ├── PrescriptionTable.tsx  # Tableau des prescriptions
@@ -234,30 +238,22 @@ src/
 npm run build
 ```
 
-Les fichiers de production sont générés dans le répertoire `dist/`.
-
 ---
 
-## Exercice 3 — Moteur de cohortes Scala/Spark
-
-### Description
-
-Moteur de recherche de cohortes de patients utilisant **Apache Spark** et **Apache Solr**. Le moteur traduit des critères de recherche au format FHIR en requêtes Solr, puis applique une logique d'inclusion/exclusion pour identifier les patients correspondants.
+## Moteur de cohortes — Scala/Spark
 
 ### Installation
 
 ```bash
-# 1. Se placer dans le répertoire
 cd Exercice_scala_spark
 
-# 2. Démarrer Solr via Docker
+# Démarrer Solr
 docker-compose up -d
 
-# 3. Attendre que Solr soit prêt (~10 secondes), puis initialiser les données
+# Initialiser les données (attendre ~10s que Solr soit prêt)
 chmod +x init_solr.sh
 ./init_solr.sh
 
-# 4. Copier le fichier d'environnement
 cp .env.example .env
 ```
 
@@ -267,47 +263,29 @@ cp .env.example .env
 sbt run
 ```
 
-Le moteur charge la requête depuis `src/main/resources/query.json`, exécute la recherche de cohorte, et affiche le nombre de patients correspondants.
+Le moteur charge les critères depuis `query.json`, exécute la recherche et retourne le nombre de patients correspondants.
 
-### Fonctionnement du moteur
+### Fonctionnement
 
-Le `CohortSearchEngine` fonctionne en 4 étapes :
+Le moteur fonctionne en 4 étapes :
 
-**Étape 1 — Parsing des critères FHIR**
+**1. Parsing des critères FHIR** — Traduction des searchParams en filtres Solr :
 
-Les `searchParams` au format FHIR sont traduits en filtres Solr. Les préfixes suivants sont supportés :
+| Préfixe FHIR | Signification | Exemple | Filtre Solr |
+|---------------|---------------|---------|-------------|
+| `ge` | >= | `birthDate=ge2005-01-01` | `birthDate:[2005-01-01T00:00:00Z TO *]` |
+| `gt` | > | `birthDate=gt2005-01-01` | `birthDate:{2005-01-01T00:00:00Z TO *}` |
+| `le` | <= | `length=le11` | `length:[* TO 11]` |
+| `lt` | < | `length=lt12` | `length:[* TO 11]` |
+| *(aucun)* | = | `gender=male` | `gender:male` |
 
-| Préfixe FHIR | Signification | Exemple | Filtre Solr généré |
-|---------------|---------------|---------|-------------------|
-| `ge` | Supérieur ou égal | `birthDate=ge2005-01-01` | `birthDate:[2005-01-01T00:00:00Z TO *]` |
-| `gt` | Strictement supérieur | `birthDate=gt2005-01-01` | `birthDate:{2005-01-01T00:00:00Z TO *}` |
-| `le` | Inférieur ou égal | `length=le11` | `length:[* TO 11]` |
-| `lt` | Strictement inférieur | `length=lt12` | `length:[* TO 11]` |
-| *(aucun)* | Égalité exacte | `gender=male` | `gender:male` |
+**2. Chargement Solr** — Mapping dynamique Resource FHIR → Collection Solr (Patient → `patientAphp`, Encounter → `encounterAphp`, etc.)
 
-**Étape 2 — Chargement depuis Solr**
+**3. Inclusion / Exclusion** — Les critères `Include=true` sont intersectés (inner join Spark), les critères `Include=false` sont exclus (left anti join).
 
-Chaque critère est mappé dynamiquement à sa collection Solr :
+**4. Filtrage par périmètre** — Seuls les patients ayant un Encounter dans l'organisation spécifiée sont conservés.
 
-| Resource FHIR | Collection Solr |
-|---------------|----------------|
-| Patient | `patientAphp` |
-| Encounter | `encounterAphp` |
-| DocumentReference | `documentReferenceAphp` |
-
-**Étape 3 — Logique d'inclusion / exclusion**
-
-Les critères avec `Include=true` sont intersectés via un inner join Spark. Les critères avec `Include=false` sont exclus via un left anti join. Cela permet de construire la cohorte progressivement, quel que soit le nombre de critères.
-
-**Étape 4 — Filtrage par périmètre**
-
-Les périmètres (organisations) filtrent les patients en ne conservant que ceux ayant au moins un `Encounter` dans l'organisation spécifiée.
-
-### Exemple de requête
-
-Le fichier `query.json` fourni recherche les patients masculins, actifs, nés après le 01/01/2005 (inclusion), ayant au moins un séjour de moins de 12 jours (inclusion), sans document mentionnant "cancer" (exclusion), dans le périmètre Organization/aphp-psl.
-
-### Lancer les tests
+### Tests
 
 ```bash
 sbt test
@@ -338,4 +316,3 @@ docker-compose down
 **Cheikhou Dansokho** — Développeur Fullstack
 
 - GitHub : [@cdansokho](https://github.com/cdansokho)
-
