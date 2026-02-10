@@ -67,7 +67,8 @@ export default function PrescriptionFiltersBar({ filters, onChange }: Props) {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* Ligne 1 : Patient, Médicament, Statut */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
         {/* Patient */}
         <div>
           <label className="block text-xs font-medium text-text-secondary mb-1">
@@ -137,63 +138,78 @@ export default function PrescriptionFiltersBar({ filters, onChange }: Props) {
             <option value="suppr">Supprimée</option>
           </select>
         </div>
+      </div>
 
-        {/* Date début (intervalle) */}
-        <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1">
-            Date début (du)
+      {/* Ligne 2 : Plages de dates */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Plage date de début */}
+        <div className="rounded-lg border border-border/50 bg-gray-50 p-3">
+          <label className="block text-xs font-semibold text-text-secondary mb-2">
+            Période de début de prescription
           </label>
-          <input
-            type="date"
-            className={inputClass + " w-full"}
-            value={filters.start_date_gte ?? ""}
-            onChange={(e) =>
-              onChange({ ...filters, start_date_gte: e.target.value })
-            }
-          />
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="block text-[11px] text-text-secondary mb-1">
+                Du
+              </label>
+              <input
+                type="date"
+                className={inputClass + " w-full"}
+                value={filters.start_date_gte ?? ""}
+                onChange={(e) =>
+                  onChange({ ...filters, start_date_gte: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] text-text-secondary mb-1">
+                Au
+              </label>
+              <input
+                type="date"
+                className={inputClass + " w-full"}
+                value={filters.start_date_lte ?? ""}
+                onChange={(e) =>
+                  onChange({ ...filters, start_date_lte: e.target.value })
+                }
+              />
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1">
-            Date début (au)
+        {/* Plage date de fin */}
+        <div className="rounded-lg border border-border/50 bg-gray-50 p-3">
+          <label className="block text-xs font-semibold text-text-secondary mb-2">
+            Période de fin de prescription
           </label>
-          <input
-            type="date"
-            className={inputClass + " w-full"}
-            value={filters.start_date_lte ?? ""}
-            onChange={(e) =>
-              onChange({ ...filters, start_date_lte: e.target.value })
-            }
-          />
-        </div>
-
-        {/* Date fin (intervalle) */}
-        <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1">
-            Date fin (du)
-          </label>
-          <input
-            type="date"
-            className={inputClass + " w-full"}
-            value={filters.end_date_gte ?? ""}
-            onChange={(e) =>
-              onChange({ ...filters, end_date_gte: e.target.value })
-            }
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1">
-            Date fin (au)
-          </label>
-          <input
-            type="date"
-            className={inputClass + " w-full"}
-            value={filters.end_date_lte ?? ""}
-            onChange={(e) =>
-              onChange({ ...filters, end_date_lte: e.target.value })
-            }
-          />
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="block text-[11px] text-text-secondary mb-1">
+                Du
+              </label>
+              <input
+                type="date"
+                className={inputClass + " w-full"}
+                value={filters.end_date_gte ?? ""}
+                onChange={(e) =>
+                  onChange({ ...filters, end_date_gte: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] text-text-secondary mb-1">
+                Au
+              </label>
+              <input
+                type="date"
+                className={inputClass + " w-full"}
+                value={filters.end_date_lte ?? ""}
+                onChange={(e) =>
+                  onChange({ ...filters, end_date_lte: e.target.value })
+                }
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
