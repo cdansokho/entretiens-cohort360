@@ -137,47 +137,47 @@ python manage.py seed_demo
 python manage.py runserver
 ```
 
-Le serveur démarre sur **http://localhost:8000**. L'API est accessible sous `/api/`.
+Le serveur démarre sur **http://localhost:8000**.
 
 ### Endpoints
 
 | Méthode | Endpoint | Description |
 |---------|----------|-------------|
-| `GET` | `/api/Patient` | Liste des patients |
-| `GET` | `/api/Patient/{id}` | Détail d'un patient |
-| `GET` | `/api/Medication` | Liste des médicaments |
-| `GET` | `/api/Medication/{id}` | Détail d'un médicament |
-| `GET` | `/api/Prescription` | Liste des prescriptions (filtrable) |
-| `GET` | `/api/Prescription/{id}` | Détail d'une prescription |
-| `POST` | `/api/Prescription` | Créer une prescription |
-| `PUT` | `/api/Prescription/{id}` | Mise à jour complète |
-| `PATCH` | `/api/Prescription/{id}` | Mise à jour partielle |
+| `GET` | `/Patient` | Liste des patients |
+| `GET` | `/Patient/{id}` | Détail d'un patient |
+| `GET` | `/Medication` | Liste des médicaments |
+| `GET` | `/Medication/{id}` | Détail d'un médicament |
+| `GET` | `/Prescription` | Liste des prescriptions (filtrable) |
+| `GET` | `/Prescription/{id}` | Détail d'une prescription |
+| `POST` | `/Prescription` | Créer une prescription |
+| `PUT` | `/Prescription/{id}` | Mise à jour complète |
+| `PATCH` | `/Prescription/{id}` | Mise à jour partielle |
 
 ### Filtres
 
 Les prescriptions peuvent être filtrées via query parameters :
 
 ```
-GET /api/Prescription?patient=1&status=active
-GET /api/Prescription?medication=3&date_debut__gte=2025-01-01
-GET /api/Prescription?date_fin__lte=2025-12-31&status=completed
+GET /Prescription?patient=1&status=valide
+GET /Prescription?medication=3&start_date_gte=2025-01-01
+GET /Prescription?end_date_lte=2025-12-31&status=en_attente
 ```
 
 | Paramètre | Type | Description |
 |-----------|------|-------------|
 | `patient` | int | ID du patient |
 | `medication` | int | ID du médicament |
-| `status` | string | `active`, `completed`, `cancelled`, `suspended` |
-| `date_debut__gte` | date | Date de début >= |
-| `date_debut__lte` | date | Date de début <= |
-| `date_fin__gte` | date | Date de fin >= |
-| `date_fin__lte` | date | Date de fin <= |
+| `status` | string | `valide`, `en_attente`, `suppr` |
+| `start_date_gte` | date | Date de début >= |
+| `start_date_lte` | date | Date de début <= |
+| `end_date_gte` | date | Date de fin >= |
+| `end_date_lte` | date | Date de fin <= |
 
 ### Validation métier
 
-- La **date de fin** doit être postérieure à la **date de début**
-- Le **statut** doit être une valeur autorisée
-- Les champs `patient` et `medication` sont obligatoires
+- La **date de fin** doit être postérieure ou égale à la **date de début**
+- Le **statut** doit être une valeur autorisée (`valide`, `en_attente`, `suppr`)
+- Les champs `patient` et `medication` sont obligatoires et doivent exister dans le système
 
 ### Tests
 
@@ -303,7 +303,7 @@ docker-compose down
 
 | Catégorie | Technologies |
 |-----------|-------------|
-| **Backend** | Python 3.10+, Django 4.2+, Django REST Framework, django-filter |
+| **Backend** | Python 3.10+, Django 4.2, Django REST Framework 3.14+, django-filter |
 | **Frontend** | React 19, TypeScript 5.9, Tailwind CSS 4, Vite 7, React Query 5, Axios |
 | **Big Data** | Scala 2.12, Apache Spark 3.3, Apache Solr 8.11 |
 | **Tests** | unittest (Django), ScalaTest |
