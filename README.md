@@ -106,7 +106,7 @@ L'API et le frontend fonctionnent ensemble (le frontend consomme l'API Django). 
 | **Python** | 3.10+ | Backend API |
 | **Node.js** | 18+ | Frontend |
 | **npm** | 9+ | Frontend |
-| **Java JDK** | 17+ | Moteur de cohortes |
+| **Java JDK** | 11 ou 17 | Moteur de cohortes |
 | **sbt** | 1.9+ | Moteur de cohortes |
 | **Docker** & **Docker Compose** | 20+ | Moteur de cohortes (Solr) |
 
@@ -304,7 +304,7 @@ docker-compose down
 | Catégorie | Technologies |
 |-----------|-------------|
 | **Backend** | Python 3.10+, Django 4.2+, Django REST Framework, django-filter |
-| **Frontend** | React 19, TypeScript 5.9, Tailwind CSS 4, Vite 7, React Query, Axios |
+| **Frontend** | React 19, TypeScript 5.9, Tailwind CSS 4, Vite 7, React Query 5, Axios |
 | **Big Data** | Scala 2.12, Apache Spark 3.3, Apache Solr 8.11 |
 | **Tests** | unittest (Django), ScalaTest |
 | **Infra** | Docker, Docker Compose |
