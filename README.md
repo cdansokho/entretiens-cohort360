@@ -62,7 +62,7 @@ L'API et le frontend fonctionnent ensemble (le frontend consomme l'API Django). 
 
 ```
 .
-├── backend/                         # API REST Django
+├── Exercice_Django/                 # API REST Django
 │   ├── config/                      # Configuration Django (settings, urls)
 │   ├── medical/                     # Application principale
 │   │   ├── models.py                # Modèles Patient, Medication, Prescription
@@ -75,7 +75,7 @@ L'API et le frontend fonctionnent ensemble (le frontend consomme l'API Django). 
 │   ├── requirements.txt
 │   └── manage.py
 │
-├── frontend/                        # Interface React + TypeScript
+├── Exercice_Front/                  # Interface React + TypeScript
 │   ├── src/
 │   │   ├── pages/                   # Pages (PrescriptionsPage)
 │   │   ├── components/              # Composants réutilisables
@@ -85,7 +85,7 @@ L'API et le frontend fonctionnent ensemble (le frontend consomme l'API Django). 
 │   ├── package.json
 │   └── vite.config.ts
 │
-└── cohort-engine/                   # Moteur de cohortes Scala/Spark
+└── Exercice_scala_spark/            # Moteur de cohortes Scala/Spark
     ├── src/main/scala/com/cohort360/
     │   ├── engine/                  # CohortSearchEngine (coeur du moteur)
     │   ├── model/                   # Modèle SearchCriteria
@@ -116,7 +116,7 @@ L'API et le frontend fonctionnent ensemble (le frontend consomme l'API Django). 
 ### Installation
 
 ```bash
-cd backend
+cd Exercice_Django
 
 python -m venv venv
 source venv/bin/activate        # Linux / macOS
@@ -193,7 +193,7 @@ python manage.py test medical.tests.test_api -v 2
 ### Installation
 
 ```bash
-cd frontend
+cd Exercice_Front
 
 npm install
 ```
@@ -201,7 +201,7 @@ npm install
 ### Lancement
 
 ```bash
-# Le backend Django doit tourner sur le port 8000
+# L'API Django (Exercice_Django) doit tourner sur le port 8000
 npm run dev
 ```
 
@@ -244,7 +244,7 @@ npm run build
 ### Installation
 
 ```bash
-cd cohort-engine
+cd Exercice_scala_spark
 
 # Démarrer Solr
 docker-compose up -d

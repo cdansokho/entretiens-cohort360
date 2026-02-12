@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+/* Dark mode basé sur la classe .dark sur html */
+@custom-variant dark (&&:where(.dark, .dark *));
+
+@theme inline {
+  --color-primary: oklch(0.48 0.14 252);
+  --color-primary-light: oklch(0.58 0.12 252);
+  --color-primary-dark: oklch(0.38 0.14 252);
+  --color-secondary: oklch(0.62 0.10 172);
+  --color-accent: oklch(0.72 0.14 75);
+  --color-danger: oklch(0.55 0.20 25);
+  --color-success: oklch(0.55 0.18 145);
+  --color-warning: oklch(0.72 0.16 80);
+  --color-surface: oklch(0.98 0.004 260);
+  --color-surface-hover: oklch(0.95 0.008 260);
+  --color-border: oklch(0.90 0.008 260);
+  --color-text: oklch(0.22 0.02 260);
+  --color-text-secondary: oklch(0.48 0.02 260);
+  --color-card: oklch(1 0 0);
+  --color-shadow: 0 1px 3px oklch(0 0 0 / 0.08);
+  --color-shadow-lg: 0 10px 40px -10px oklch(0 0 0 / 0.15);
+}
+
+/* Surcharges quand .dark est sur html */
+.dark {
+  --color-surface: oklch(0.16 0.01 260);
+  --color-surface-hover: oklch(0.20 0.01 260);
+  --color-border: oklch(0.28 0.01 260);
+  --color-text: oklch(0.95 0.01 260);
+  --color-text-secondary: oklch(0.65 0.02 260);
+  --color-card: oklch(0.20 0.01 260);
+  --color-primary: oklch(0.58 0.14 252);
+  --color-primary-light: oklch(0.68 0.12 252);
+  --color-primary-dark: oklch(0.48 0.14 252);
+  --color-danger: oklch(0.60 0.20 25);
+  --color-success: oklch(0.60 0.18 145);
+  --color-warning: oklch(0.75 0.16 80);
+  --color-shadow: 0 1px 3px oklch(0 0 0 / 0.3);
+  --color-shadow-lg: 0 10px 40px -10px oklch(0 0 0 / 0.4);
+}
+
+/* Force les utilitaires de thème à utiliser les variables (pour que .dark les surcharge) */
+.bg-surface,
+.bg-surface\/30,
+.bg-surface\/50,
+.bg-surface\/60 { background-color: var(--color-surface) !important; }
+.bg-surface-hover { background-color: var(--color-surface-hover) !important; }
+.bg-card,
+.bg-card\/95,
+.bg-card\/80 { background-color: var(--color-card) !important; }
+.border-border,
+.border-border\/50 { border-color: var(--color-border) !important; }
+.text-text { color: var(--color-text) !important; }
+.text-text-secondary { color: var(--color-text-secondary) !important; }
+.bg-primary { background-color: var(--color-primary) !important; }
+.text-primary { color: var(--color-primary) !important; }
+.border-primary { border-color: var(--color-primary) !important; }
+.text-danger { color: var(--color-danger) !important; }
+.border-danger { border-color: var(--color-danger) !important; }
+.text-success { color: var(--color-success) !important; }
+.text-warning { color: var(--color-warning) !important; }
+.bg-danger { background-color: var(--color-danger) !important; }
+.bg-primary-light { background-color: var(--color-primary-light) !important; }
+.bg-primary-dark { background-color: var(--color-primary-dark) !important; }
+.hover\:bg-surface-hover:hover { background-color: var(--color-surface-hover) !important; }
+.hover\:bg-primary:hover { background-color: var(--color-primary) !important; }
+.hover\:bg-primary-light:hover { background-color: var(--color-primary-light) !important; }
+.hover\:text-text:hover { color: var(--color-text) !important; }
+.active\:bg-primary-dark:active { background-color: var(--color-primary-dark) !important; }
+.active\:bg-surface:active { background-color: var(--color-surface) !important; }
+.bg-border\/60 { background-color: var(--color-border) !important; }
+.bg-text-secondary { background-color: var(--color-text-secondary) !important; }
+.shadow-\[0_1px_0_0_var\(--color-border\)\] { box-shadow: 0 1px 0 0 var(--color-border) !important; }
+
+@keyframes modalBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modalPanelIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+.modal-backdrop {
+  animation: modalBackdropIn 0.2s ease-out forwards;
+}
+.modal-panel {
+  animation: modalPanelIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.animate-toast-in {
+  animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+.animate-skeleton {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop,
+  .modal-panel,
+  .animate-toast-in {
+    animation: none;
+  }
+  .animate-skeleton {
+    animation: none;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus visible pour accessibilité */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible) {
+  outline: none;
+}
